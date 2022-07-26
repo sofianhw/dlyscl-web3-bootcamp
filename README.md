@@ -1,13 +1,19 @@
-# Sample Hardhat Project
+# dlyscl-web3-bootcamp
+## Install & Deploy SmartContract
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+```
+yarn
+yarn hardhat compile
+yarn hardhat run scripts/deploy.js --network ganache
+```
+  
+## Security Check
+### Install Tools
+- [Install Mythrill](https://mythril-classic.readthedocs.io/en/master/installation.html)
+- [Install Slither](https://github.com/crytic/slither#how-to-install)
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
+### Test SmartContract
+```
+slither contracts/Election.sol --checklist > slith.MD
+myth analyze contracts/Lockdrop.sol --max-depth 20 --execution-timeout 30 -o markdown > myth.MD
 ```
