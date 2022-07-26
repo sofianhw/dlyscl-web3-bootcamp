@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vote Dapp</title>
+  </head>
+
+  <body>
+    <div id="Metamask">
+      <span id="status">Status</span>
+      <br />
+      <button id="connectButton" onclick="bundle.connect()">Connect</button>
+    </div>
+    <div id="Data">
+      <br />
+      <button id="getCandidateButton" onclick="bundle.getCandidates()">Get Candidate</button>
+      <br />
+      <table>
+        <tbody id="candidate"></tbody>
+      </table>
+      <br />
+      Name : <input id="inputName">
+      <br />
+      Party : <input id="inputParty">
+      <br />
+      <button id="addCandidateButton" onclick="bundle.addCandidate()">Add Candidate</button>
+      <br />
+      Candidate : <input id="inputCandidate">
+      <button id="voteButton" onclick="bundle.vote()">Vote</button>
+    </div>
+  </body>
+
+  <script src="./dist/bundle.js" type="text/javascript"></script>
+</html>
