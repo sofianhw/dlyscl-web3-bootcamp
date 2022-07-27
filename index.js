@@ -1,5 +1,3 @@
-const { web3 } = require("web3");
-
 async function connect() {
   if (typeof window.ethereum !== "undefined") {
     try {
