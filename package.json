@@ -7,7 +7,8 @@
   "author": "Sofian Hadiwijaya <me.sofian.hadiwijaya@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "browserify index.js --standalone bundle -o ./dist/bundle.js"
+    "build": "browserify index.js --standalone bundle -o ./dist/bundle.js",
+    "start": "http-server"
   },
   "devDependencies": {
     "babelify": "^10.0.0",
