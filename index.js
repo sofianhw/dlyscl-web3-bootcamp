@@ -1,10 +1,14 @@
-const Web3js = require("web3");
+const Portis = require("@portis/web3");
+const Web3 = require("web3");
 const voteInterface = require("./Election.json");
 const CONTRACT_ABI = voteInterface.abi;
-const CONTRACT_ADDRESS = '0x911f071d786bdc2a6db7b4f133601e7f097bfdfb';
+const CONTRACT_ADDRESS = '0xdAb2762b513E445a835EFae87754E0421599aF23';
 
-let web3js, Election;
+let Election;
 let Candidates = [];
+
+const portis = new Portis('ca0b30d0-ad6a-4197-8d1d-b96bc3cb6927','goerli');
+const web3 = new Web3(portis.provider);
 
 const metamaskBox = document.getElementById('Metamask');
 const dataBox = document.getElementById('Data');
@@ -22,53 +26,59 @@ const candidateParty = document.getElementById("inputParty");
 const candidateId= document.getElementById("inputCandidate");
 
 
-(async () => {
-    dataBox.hidden = true;
-    if (typeof window.ethereum !== "undefined") {
-        const accounts = await ethereum.request({ method: "eth_accounts" });
-        if(accounts.length > 0){
-            statusBox.innerHTML = "Your Address " + accounts[0];
-            initiateContract(accounts[0]);
-            connectButton.disabled = true;
-            dataBox.hidden = false;
-        } else {
-            statusBox.innerHTML = "Please Connect";
-            connectButton.hidden = false;
-        }
-    } else {
-        statusBox.innerHTML = "Please install Metamask Pluggin";
-        connectButton.hidden = true;
-    }
-})();
+// (async () => {
+//     dataBox.hidden = true;
+//     if (typeof window.ethereum !== "undefined") {
+//         const accounts = await ethereum.request({ method: "eth_accounts" });
+//         if(accounts.length > 0){
+//             statusBox.innerHTML = "Your Address " + accounts[0];
+//             initiateContract(accounts[0]);
+//             connectButton.disabled = true;
+//             dataBox.hidden = false;
+//         } else {
+//             statusBox.innerHTML = "Please Connect";
+//             connectButton.hidden = false;
+//         }
+//     } else {
+//         statusBox.innerHTML = "Please install Metamask Pluggin";
+//         connectButton.hidden = true;
+//     }
+// })();
 
 async function connect() {
-    if (window.ethereum.isConnected()) {
-        try {
-            await ethereum.request({ method: "eth_requestAccounts" });
-        } catch (error) {
-            console.log(error);
-        }
+    // if (window.ethereum.isConnected()) {
+    //     try {
+    //         await ethereum.request({ method: "eth_requestAccounts" });
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
         
-        statusBox.innerHTML = "Connected"
-        let accounts = await ethereum.request({ method: "eth_accounts" });
-        connectButton.innerHTML = accounts[0];
+    //     statusBox.innerHTML = "Connected"
+    //     let accounts = await ethereum.request({ method: "eth_accounts" });
+    //     connectButton.innerHTML = accounts[0];
         
-        initiateContract(accounts[0]);    
-        dataBox.hidden = false;
+    //     initiateContract(accounts[0]);    
+    //     dataBox.hidden = false;
+    //     connectButton.disabled = true;
+    // }
+    await web3.eth.getAccounts((error, accounts) => {
+        console.log(accounts);
+        statusBox.innerHTML = "Your Address " + accounts[0];
+        initiateContract(accounts[0]);
         connectButton.disabled = true;
-    }
+        initiateContract(accounts[0]);
+    });
 }
 
 async function initiateContract(account) {
-    web3js = await new Web3js(Web3js.givenProvider);
-    web3js.eth.defaultAccount = account;
-    Election = new web3js.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+    web3.eth.defaultAccount = account;
+    Election = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
     await subscribe();
 }
 
 async function vote() {
     const id = candidateId.value;
-    const vote = await Election.methods.vote(id).send({from: web3js.eth.defaultAccount});
+    const vote = await Election.methods.vote(id).send({from: web3.eth.defaultAccount});
     statusBox.innerHTML = "Candidate voted!";
     getCandidates();
     
@@ -79,7 +89,7 @@ async function addCandidate() {
     const name = candidateName.value;
     const party = candidateParty.value;
     
-    const candidate = await Election.methods.addCandidate(name, party).send({from: web3js.eth.defaultAccount});
+    const candidate = await Election.methods.addCandidate(name, party).send({from: web3.eth.defaultAccount});
 
     statusBox.innerHTML = "Candidate added!";
     getCandidates();
@@ -132,5 +142,6 @@ module.exports = {
     connect,
     addCandidate,
     getCandidates,
-    vote
+    vote,
+    web3
 };

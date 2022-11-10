@@ -15,6 +15,7 @@
     "http-server": "^14.1.1"
   },
   "dependencies": {
+    "@portis/web3": "^4.0.7",
     "browserify": "^17.0.0",
     "web3": "^1.7.4"
   }
