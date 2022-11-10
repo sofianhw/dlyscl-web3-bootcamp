@@ -1,7 +1,7 @@
 const Web3js = require("web3");
 const voteInterface = require("./Election.json");
 const CONTRACT_ABI = voteInterface.abi;
-const CONTRACT_ADDRESS = '0x0bc74F659c4169F8B1fB09ABBF763E2df1F15C63';
+const CONTRACT_ADDRESS = '0x911f071d786bdc2a6db7b4f133601e7f097bfdfb';
 
 let web3js, Election;
 let Candidates = [];
