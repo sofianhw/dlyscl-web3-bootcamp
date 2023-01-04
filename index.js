@@ -2,13 +2,13 @@ const Portis = require("@portis/web3");
 const Web3 = require("web3");
 const voteInterface = require("./Election.json");
 const CONTRACT_ABI = voteInterface.abi;
-const CONTRACT_ADDRESS = '0xdAb2762b513E445a835EFae87754E0421599aF23';
+const CONTRACT_ADDRESS = '0x68fdd9EB3b82890D266475DeC6D829032231766e';
 
-let Election;
+let web3, Election;
 let Candidates = [];
 
-const portis = new Portis('ca0b30d0-ad6a-4197-8d1d-b96bc3cb6927','goerli');
-const web3 = new Web3(portis.provider);
+// const portis = new Portis('ca0b30d0-ad6a-4197-8d1d-b96bc3cb6927','goerli');
+// const web3 = new Web3(portis.provider);
 
 const metamaskBox = document.getElementById('Metamask');
 const dataBox = document.getElementById('Data');
@@ -26,52 +26,54 @@ const candidateParty = document.getElementById("inputParty");
 const candidateId= document.getElementById("inputCandidate");
 
 
-// (async () => {
-//     dataBox.hidden = true;
-//     if (typeof window.ethereum !== "undefined") {
-//         const accounts = await ethereum.request({ method: "eth_accounts" });
-//         if(accounts.length > 0){
-//             statusBox.innerHTML = "Your Address " + accounts[0];
-//             initiateContract(accounts[0]);
-//             connectButton.disabled = true;
-//             dataBox.hidden = false;
-//         } else {
-//             statusBox.innerHTML = "Please Connect";
-//             connectButton.hidden = false;
-//         }
-//     } else {
-//         statusBox.innerHTML = "Please install Metamask Pluggin";
-//         connectButton.hidden = true;
-//     }
-// })();
+(async () => {
+    dataBox.hidden = true;
+    if (typeof window.ethereum !== "undefined") {
+        const accounts = await ethereum.request({ method: "eth_accounts" });
+        if(accounts.length > 0){
+            statusBox.innerHTML = "Your Address " + accounts[0];
+            initiateContract(accounts[0]);
+            connectButton.disabled = true;
+            dataBox.hidden = false;
+        } else {
+            statusBox.innerHTML = "Please Connect";
+            connectButton.hidden = false;
+        }
+    } else {
+        statusBox.innerHTML = "Please install Metamask Pluggin";
+        connectButton.hidden = true;
+    }
+})();
 
 async function connect() {
-    // if (window.ethereum.isConnected()) {
-    //     try {
-    //         await ethereum.request({ method: "eth_requestAccounts" });
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
+    if (window.ethereum.isConnected()) {
+        try {
+            await ethereum.request({ method: "eth_requestAccounts" });
+        } catch (error) {
+            console.log(error);
+        }
         
-    //     statusBox.innerHTML = "Connected"
-    //     let accounts = await ethereum.request({ method: "eth_accounts" });
-    //     connectButton.innerHTML = accounts[0];
+        statusBox.innerHTML = "Connected"
+        let accounts = await ethereum.request({ method: "eth_accounts" });
+        connectButton.innerHTML = accounts[0];
         
-    //     initiateContract(accounts[0]);    
-    //     dataBox.hidden = false;
-    //     connectButton.disabled = true;
-    // }
-    await web3.eth.getAccounts((error, accounts) => {
-        console.log(accounts);
-        statusBox.innerHTML = "Your Address " + accounts[0];
-        initiateContract(accounts[0]);
+        initiateContract(accounts[0]);    
+        dataBox.hidden = false;
         connectButton.disabled = true;
-        initiateContract(accounts[0]);
-    });
+    }
+    // await web3.eth.getAccounts((error, accounts) => {
+    //     console.log(accounts);
+    //     statusBox.innerHTML = "Your Address " + accounts[0];
+    //     initiateContract(accounts[0]);
+    //     connectButton.disabled = true;
+    //     initiateContract(accounts[0]);
+    // });
 }
 
 async function initiateContract(account) {
+    web3 = await new Web3(Web3.givenProvider);
     web3.eth.defaultAccount = account;
+    
     Election = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
     await subscribe();
 }
